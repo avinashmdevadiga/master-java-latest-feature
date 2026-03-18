@@ -11,7 +11,10 @@
  - lamdas are not tie to the any class like regular method
  - lamda can assigned to any variable and pass as a variable.
 
-    ``` syntax () -> {}```.
+``` 
+syntax () -> {}
+
+```
 
 #### Usage
     - main usage is to implement the functional interface.
