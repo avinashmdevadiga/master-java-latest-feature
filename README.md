@@ -27,3 +27,14 @@
             void run();
             }
         }
+### Functional interface
+- An interface has single abstract method is called as Functional Interface
+- it exist since java 1.0v itself
+- interface annotate as @FunctionalInterface
+- this annotation is introduced in jdk 1.8 and its a optional.
+- new Functional Interface in java.
+  - Functions
+  - Predicate
+  - Consumer
+  - Supplier
+- 
