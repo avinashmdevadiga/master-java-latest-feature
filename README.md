@@ -17,12 +17,12 @@ syntax () -> {}
 ```
 
 #### Usage
-    - main usage is to implement the functional interface.
-    -  functional interfaces in other way we call it as SAM(Single Abstract Method) interface.
-    - if the interface has only one abstract method those interface is
-        consider as a Functional interface.
-        example: Runnable, Comparator interface.
-        @FunctionalInterface
+- main usage is to implement the functional interface.
+-  functional interfaces in other way we call it as SAM(Single Abstract Method) interface.
+- if the interface has only one abstract method those interface is
+  consider as a Functional interface.
+   - example: Runnable, Comparator interface.
+        ```@FunctionalInterface
         public interface Runnable {
             /**
             * Runs this operation.
@@ -30,14 +30,17 @@ syntax () -> {}
             void run();
             }
         }
+     ```
 ### Functional interface
 - An interface has single abstract method is called as Functional Interface
 - it exist since java 1.0v itself
 - interface annotate as @FunctionalInterface
 - this annotation is introduced in jdk 1.8 and its a optional.
 - new Functional Interface in java.
-  - Functions
-  - Predicate
-  - Consumer
-  - Supplier
+  - Functions - it take input value and return output
+  - Predicate - it take input value and return boolean value
+  - Consumer - it take input value but not returning any value
+  - Supplier - it doesnot take any value and return value.
+
+### Method References
 - 
