@@ -43,4 +43,14 @@ syntax () -> {}
   - Supplier - it doesnot take any value and return value.
 
 ### Method References
-- 
+- Using method reference we can write simpler and more readable code
+- syntax:
+  - classname::methodname
+- lamda expression refered to method directly.
+
+### Constructor Reference
+- syntax:
+    - classname::new
+### lamdas and local variable restriction
+- not allowed to use same local variable name as a lamda parameter or inside the lamda body
+- not allowed to reasaign a new value to the local variable inside the lamda body
