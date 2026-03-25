@@ -13,7 +13,7 @@ public class SupplierExample {
     *it has a get() as SAM
     * */
 
-    private static Supplier<Student> supplier = ()-> new Student("anil",3,3.9,"male", List.of("swimming","cricket","basketball","football"));
+    private static Supplier<Student> supplier = ()-> new Student("anil",3,3.9,"male", List.of("swimming","cricket","basketball","football"),11);
     private static Supplier<List<Student>> studentListSupplier = () -> StudentDatabase.getStudents();
 
     public static void main(String[] args) {
