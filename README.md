@@ -1201,3 +1201,24 @@ Stream.generate(<supplier>);
 ### joining()
 - it is a terminal operation which joins the elements of the stream.
 - joining(),joining(","),joining(",","(",")");
+
+### Terminal operation
+- terminnal Operation collects the data for you.
+- Terminal Operation starts the whole stream pipeline.
+- ex: forEach(),min(),max(),reduce() etc
+- collect() is act as a accumalator and takes input of type Collector.
+- Produce the result as per the input passed to the collect() method  
+- joining() method collector performs the string concatenation on the element in the stream
+- joining has three overloaded versions
+- cointing()- Collector returns the total number of elements as a result.
+- mapping() -  collectors applies a transformation function first and then collects the data in a collection
+- maxby() and minBy() takes comparator as a input and return Optional as an output.
+- maxBy() returns max element based on the property passed to the comparator.
+- minBy() returns min element based on the property passed to the comparator.
+- summingInt()-it returns the sum as a result.
+- averageingInt() -  it returns average as result.
+- groupingBy() - it is equivalent to the grouping by operation in sql
+- it group the elements based on a property.
+- the output of groupingBy() is to be Map<K,V>
+- 3 version
+- groupingBy(classifier),groupingBy(classifier,downstream),groupingBy(classifier,supplier, downstream).
