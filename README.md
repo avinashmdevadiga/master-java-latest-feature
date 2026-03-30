@@ -1155,4 +1155,49 @@ List<String> uniqueWithNulls = names.stream()
 - noneMatch(predicate) returns true if no elements in the stream match the predicate; effectively the negation of anyMatch.
 - These methods provide concise ways to perform checks and validations on stream elements without explicit iteration.
 
+### findFirst(), findAny()
+- this is used to find the element in the stream.
+- it will return actual element of type Optional.
+- findFirst() will return first element in the stream.
+- findAny() will return first encountered element in the stream.
 
+### stream api : stateful vs stateless
+- does the Streams have a internal state --> yes.
+- does all the Stream function maintain internal state -->no
+ ## stream api factory method
+- of() -> this factory method is used to create a stream of certain values passed to this method.
+- iterate(), generate() -> used to create infinite stream
+```java
+Stream<Integer> integerStream = Stream.of(1,2,3);
+Stream.iterate(1,(x)->x*2);
+Stream.generate(<supplier>);
+```
+
+### numeric stream 
+- represents the premitive value in the stream.
+- intStream,longStream,doubleStream
+
+### IntStream
+- IntStream.range(1,50)-->returns intStream of 49 element from 1 to 49
+- IntStream.rangeClosed(1,50) --> returns intstream of 50 element from 1 to 50.
+
+### LongStream
+- LongStream.range(1,50)-->returns longStream of 49 element from 1 to 49
+- LongStream.rangeClosed(1,50) --> returns longstream of 50 element from 1 to 50.
+
+### Aggregate Function
+- sum(), max(), min(), average() 
+
+### mapToObj(), mapToLong(), mapToDouble()
+- mapToObj - convert int stream to some object.
+- mapToLong - convert intstream to Long stream
+- mapToDouble -  convert intstream to Double Stream.
+
+### Terminal operator
+- terminal operations collects the data for you.
+  - terminal operation starts the whole stream pipeline.
+  - Terminal Operation are -forEach(),min(),max(),collect(),reduce()
+
+### joining()
+- it is a terminal operation which joins the elements of the stream.
+- joining(),joining(","),joining(",","(",")");
