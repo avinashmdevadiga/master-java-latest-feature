@@ -1,5 +1,10 @@
 # Master Java Latest Features
 
+> **Interview Rehearsal Guide** — Java 8 Features  
+> Every section follows the pattern: **What → Why → How → Gotchas → Interview Q&A**
+
+---
+
 ## Java 8 - Comprehensive Guide
 
 ### Lambda Expressions
@@ -1611,7 +1616,7 @@ Optional<String> firstActivity = students.stream()
 ```java
 // Use findFirst() when:
 // 1. Order matters
-List<String> sortedNames = students.stream()
+Optional<String> sortedName = students.stream()
     .map(Student::getName)
     .sorted()
     .findFirst();  // Need the alphabetically first name
@@ -1848,86 +1853,106 @@ Stream.iterate(1,(x)->x*2);
 Stream.generate(<supplier>);
 ```
 
-### numeric stream 
-- represents the premitive value in the stream.
-- intStream,longStream,doubleStream
+### Numeric Stream 
+- represents the primitive values in the stream.
+- IntStream, LongStream, DoubleStream
 
 ### IntStream
-- IntStream.range(1,50)-->returns intStream of 49 element from 1 to 49
-- IntStream.rangeClosed(1,50) --> returns intstream of 50 element from 1 to 50.
+- IntStream.range(1,50) --> returns IntStream of 49 elements from 1 to 49
+- IntStream.rangeClosed(1,50) --> returns IntStream of 50 elements from 1 to 50.
 
 ### LongStream
-- LongStream.range(1,50)-->returns longStream of 49 element from 1 to 49
-- LongStream.rangeClosed(1,50) --> returns longstream of 50 element from 1 to 50.
+- LongStream.range(1,50) --> returns LongStream of 49 elements from 1 to 49
+- LongStream.rangeClosed(1,50) --> returns LongStream of 50 elements from 1 to 50.
 
-### Aggregate Function
-- sum(), max(), min(), average() 
+### Aggregate Functions
+- sum(), max(), min(), average()
+- sum() - returns the sum of elements in the stream (returns int/long/double based on stream type).
+- max() - returns the maximum element as OptionalInt/OptionalLong/OptionalDouble.
+- min() - returns the minimum element as OptionalInt/OptionalLong/OptionalDouble.
+- average() - returns the average of elements as OptionalDouble.
 
 ### mapToObj(), mapToLong(), mapToDouble()
-- mapToObj - convert int stream to some object.
-- mapToLong - convert intstream to Long stream
-- mapToDouble -  convert intstream to Double Stream.
+- mapToObj() - converts IntStream to a Stream of objects.
+- mapToLong() - converts IntStream to LongStream.
+- mapToDouble() - converts IntStream to DoubleStream.
+- Boxing: boxed() - converts a primitive stream (IntStream/LongStream/DoubleStream) to a wrapper stream (Stream<Integer>/Stream<Long>/Stream<Double>).
+- Unboxing: mapToInt(), mapToLong(), mapToDouble() - converts a wrapper stream back to a primitive stream.
 
-### Terminal operator
-- terminal operations collects the data for you.
-  - terminal operation starts the whole stream pipeline.
-  - Terminal Operation are -forEach(),min(),max(),collect(),reduce()
+### Terminal Operations
+- Terminal operations collect the data for you.
+  - Terminal operation starts the whole stream pipeline.
+  - Terminal Operations are - forEach(), min(), max(), collect(), reduce(), count()
 
 ### joining()
-- it is a terminal operation which joins the elements of the stream.
-- joining(),joining(","),joining(",","(",")");
-
-### Terminal operation
-- terminnal Operation collects the data for you.
+- joining() is a Collector (used with collect()) that joins the elements of the stream into a single String.
+- joining() - joins elements with no delimiter.
+- joining(",") - joins elements with the specified delimiter.
+- joining(",", "(", ")") - joins elements with delimiter, prefix, and suffix.
+### Terminal Operation
+- Terminal Operation collects the data for you.
 - Terminal Operation starts the whole stream pipeline.
-- ex: forEach(),min(),max(),reduce() etc
-- collect() is act as a accumalator and takes input of type Collector.
-- Produce the result as per the input passed to the collect() method  
-- joining() method collector performs the string concatenation on the element in the stream
-- joining has three overloaded versions
-- cointing()- Collector returns the total number of elements as a result.
-- mapping() -  collectors applies a transformation function first and then collects the data in a collection
-- maxby() and minBy() takes comparator as a input and return Optional as an output.
-- maxBy() returns max element based on the property passed to the comparator.
-- minBy() returns min element based on the property passed to the comparator.
-- summingInt()-it returns the sum as a result.
-- averageingInt() -  it returns average as result.
-- groupingBy() - it is equivalent to the grouping by operation in sql
-- it group the elements based on a property.
-- the output of groupingBy() is to be Map<K,V>
-- 3 version
-- groupingBy(classifier),groupingBy(classifier,downstream),groupingBy(classifier,supplier, downstream).
+- ex: forEach(), min(), max(), reduce(), count() etc.
+- collect() acts as an accumulator and takes input of type Collector.
+- Produces the result as per the input passed to the collect() method.  
+- joining() method Collector performs the string concatenation on the elements in the stream.
+- joining() has three overloaded versions.
+- counting() - Collector returns the total number of elements as a result.
+- mapping() - Collector applies a transformation function first and then collects the data in a collection.
+- maxBy() and minBy() take a Comparator as an input and return Optional as an output.
+- maxBy() returns the max element based on the property passed to the Comparator.
+- minBy() returns the min element based on the property passed to the Comparator.
+- summingInt() - it returns the sum as a result.
+- averagingInt() - it returns the average as a result.
+- groupingBy() - it is equivalent to the GROUP BY operation in SQL.
+- It groups the elements based on a property.
+- The output of groupingBy() is a Map<K, V>.
+- 3 versions:
+- groupingBy(classifier), groupingBy(classifier, downstream), groupingBy(classifier, supplier, downstream).
+- partitioningBy() - it is a special case of groupingBy() that accepts a Predicate and returns a Map<Boolean, List<T>>.
+- It partitions the stream into two groups based on the Predicate (true/false).
 
-### parallel Stream
-- Splits the source of data into multiple parts
-- process them parallelly
-- combine the result.
+### Parallel Stream
+- Splits the source of data into multiple parts.
+- Processes them in parallel using the ForkJoin framework.
+- Combines the result.
+- Two ways to create a parallel stream:
+  - parallelStream() - called on a collection directly.
+  - parallel() - called on an existing sequential stream.
+- Use sequential() to convert a parallel stream back to a sequential stream.
+- Not always faster than sequential streams; depends on the data size, operations, and hardware.
+- Avoid using parallel streams with stateful operations or shared mutable state.
 
 ### Optional
-- it is used to handle the null.
-- Optional.ofNullable() - return actual Optional value if the value is not null and return Optional.empty() if the value is null.
-- Optional.of() - returns the optional value if the value is not null. if the value it null it return null pointer exception. it is used when we are sure value should not be null.
-- Optiona.empty() - return emptu optional value.
--  orElse() - it return the optional id the value available or return the Other values.
--  orElseGet - it takes supplier. if values available then return the value or else retun the supplier value.
--  orElseThrow - it return the exception if the optional value is not abvailable.
-- isPresent() - it return true if the optionalvalue available.
-- ifPresent() - if the optional value present then it execute the consumer.
+- It is used to handle null values and avoid NullPointerException.
+- Introduced in Java 8 in the java.util package.
+- Optional.ofNullable() - returns the actual Optional value if the value is not null, and returns Optional.empty() if the value is null.
+- Optional.of() - returns the Optional value if the value is not null. If the value is null, it throws NullPointerException. It is used when we are sure the value should not be null.
+- Optional.empty() - returns an empty Optional value.
+- orElse() - it returns the value if available, or returns the other (default) value.
+- orElseGet() - it takes a Supplier. If the value is available then it returns the value, or else it returns the Supplier's value.
+- orElseThrow() - it throws the exception if the Optional value is not available.
+- isPresent() - it returns true if the Optional value is available.
+- ifPresent() - if the Optional value is present then it executes the Consumer.
+- map() - transforms the value inside the Optional if present, returns Optional.
+- flatMap() - similar to map(), but the mapping function returns an Optional, avoids nested Optional<Optional<T>>.
+- filter() - if the value is present and matches the Predicate, returns the Optional; otherwise returns Optional.empty().
 
-### default and static methods in interface
-- prior java 8, interface can only have abstract method.
-  - define the contract.
-  - only allowed to declare the method signature. not allowed to provide the implementation.
-  - implemetation only allowed in the class which implements the interface.
-  - not easy for interface to evolve because if we add new method in the interface then all the class which implements the interface need to provide the implementation for that method.
-- java 8, interface can have default and static method.
-- default method - it is used to provide the default implementation for the method in the interface.
-  - default keyword is used to declare the default method in the interface.
+### Default and Static Methods in Interface
+- Prior to Java 8, interfaces could only have abstract methods.
+  - Define the contract.
+  - Only allowed to declare the method signature. Not allowed to provide the implementation.
+  - Implementation only allowed in the class which implements the interface.
+  - Not easy for interfaces to evolve because if we add a new method in the interface then all the classes which implement the interface need to provide the implementation for that method.
+- Java 8 onwards, interfaces can have default and static methods.
+- default method - it is used to provide the default implementation for a method in the interface.
+  - `default` keyword is used to declare the default method in the interface.
   - Default method can be overridden by the class which implements the interface.
-  - it is used to evolve the interface without breaking the existing implementation.
-- static method - it is used to provide the static method in the interface. 
-  - static keyword is used to declare the static method in the interface.
-  - static method can be called without creating the object of the class which implements the interface.
-  - it is used to provide utility method in the interface.
-  - static method cannot be overridden by the class which implements the interface.
+  - It is used to evolve the interface without breaking the existing implementation.
+  - If a class implements two interfaces with the same default method, the class must override the method to resolve the conflict (diamond problem).
+- static method - it is used to provide a static method in the interface. 
+  - `static` keyword is used to declare the static method in the interface.
+  - Static method can be called using the interface name directly (e.g., InterfaceName.methodName()), without creating an object.
+  - It is used to provide utility methods in the interface.
+  - Static method cannot be overridden by the class which implements the interface.
 
