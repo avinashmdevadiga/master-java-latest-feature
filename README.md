@@ -1142,28 +1142,703 @@ List<String> uniqueWithNulls = names.stream()
   // Iteration 4: a=56, b=3 → result=168
   // Final product = 168
   ```
-### limit() and skip()
-- These intermediate operations are used for controlling the subset of elements processed in the stream.
-- limit(n) returns a stream consisting of the first n elements of the original stream.
-- skip(n) returns a stream that discards the first n elements and processes the remaining elements.
-- These methods are useful for pagination, sampling, or slicing streams without materializing the entire collection.
+### limit() and skip() in Stream Operations
 
-### anyMatch(), allMatch(), and noneMatch()
-- These terminal operations take a predicate and return a boolean result based on the elements of the stream.
-- anyMatch(predicate) returns true if any element in the stream matches the predicate.
--allMatch(predicate) returns true if all elements in the stream satisfy the predicate.
-- noneMatch(predicate) returns true if no elements in the stream match the predicate; effectively the negation of anyMatch.
-- These methods provide concise ways to perform checks and validations on stream elements without explicit iteration.
+The `limit()` and `skip()` methods are intermediate operations used for controlling the subset of elements processed in a stream, particularly useful for pagination and data sampling.
 
-### findFirst(), findAny()
-- this is used to find the element in the stream.
-- it will return actual element of type Optional.
-- findFirst() will return first element in the stream.
-- findAny() will return first encountered element in the stream.
+#### Method Signatures and Purpose
+- **limit(n)**: `Stream<T> limit(long maxSize)` - Returns a stream consisting of the first n elements
+- **skip(n)**: `Stream<T> skip(long n)` - Returns a stream that discards the first n elements and processes the remaining elements
 
-### stream api : stateful vs stateless
-- does the Streams have a internal state --> yes.
-- does all the Stream function maintain internal state -->no
+#### Basic Usage Examples
+
+##### limit() - Restricting Stream Size
+```java
+List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+
+// Get first 5 elements
+List<Integer> firstFive = numbers.stream()
+    .limit(5)
+    .collect(Collectors.toList());
+// Result: [1, 2, 3, 4, 5]
+
+// Get top 3 students by GPA
+List<Student> topStudents = StudentDatabase.getStudents().stream()
+    .sorted(Comparator.comparing(Student::getGpa).reversed())
+    .limit(3)
+    .collect(Collectors.toList());
+```
+
+##### skip() - Skipping Elements
+```java
+List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+
+// Skip first 5 elements
+List<Integer> afterFive = numbers.stream()
+    .skip(5)
+    .collect(Collectors.toList());
+// Result: [6, 7, 8, 9, 10]
+
+// Skip first 2 students
+List<Student> remainingStudents = StudentDatabase.getStudents().stream()
+    .skip(2)
+    .collect(Collectors.toList());
+```
+
+#### Pagination Pattern
+```java
+// Implement pagination using skip() and limit()
+public List<Student> getStudentPage(int pageNumber, int pageSize) {
+    return StudentDatabase.getStudents().stream()
+        .skip((long) pageNumber * pageSize)  // Skip previous pages
+        .limit(pageSize)                      // Take current page
+        .collect(Collectors.toList());
+}
+
+// Get page 2 with 10 students per page
+List<Student> page2 = getStudentPage(1, 10);  // pageNumber is 0-indexed
+```
+
+#### Combining limit() and skip()
+```java
+List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+
+// Get elements from index 3 to 7
+List<Integer> middleElements = numbers.stream()
+    .skip(3)   // Skip first 3: [4, 5, 6, 7, 8, 9, 10]
+    .limit(4)  // Take next 4: [4, 5, 6, 7]
+    .collect(Collectors.toList());
+// Result: [4, 5, 6, 7]
+```
+
+#### Performance Optimization with limit()
+
+##### Short-Circuit Evaluation
+```java
+// limit() enables short-circuit evaluation
+List<Integer> firstThreeEven = IntStream.range(1, 1000000)
+    .filter(n -> n % 2 == 0)
+    .limit(3)  // Stops processing after finding 3 elements
+    .boxed()
+    .collect(Collectors.toList());
+// Result: [2, 4, 6] - Doesn't process all 1,000,000 elements
+
+// Without limit(), all elements would be processed
+List<Integer> allEven = IntStream.range(1, 1000000)
+    .filter(n -> n % 2 == 0)
+    .boxed()
+    .collect(Collectors.toList());  // Processes all elements
+```
+
+#### Practical Use Cases
+
+##### Sampling Data
+```java
+// Get random sample by shuffling and limiting
+List<Student> randomSample = StudentDatabase.getStudents().stream()
+    .sorted((s1, s2) -> Math.random() > 0.5 ? 1 : -1)  // Random shuffle
+    .limit(5)
+    .collect(Collectors.toList());
+
+// Get first N unique activities
+List<String> topActivities = StudentDatabase.getStudents().stream()
+    .flatMap(student -> student.getActivities().stream())
+    .distinct()
+    .limit(10)
+    .collect(Collectors.toList());
+```
+
+##### Data Preview
+```java
+// Preview first few records
+System.out.println("First 5 students:");
+StudentDatabase.getStudents().stream()
+    .limit(5)
+    .forEach(System.out::println);
+
+// Skip header row and get data
+List<String> dataRows = Files.lines(Paths.get("data.csv"))
+    .skip(1)  // Skip header
+    .collect(Collectors.toList());
+```
+
+#### Best Practices
+1. **Ordering Matters**: Apply `skip()` before `limit()` for pagination
+2. **Short-Circuit Optimization**: Use `limit()` early for performance with infinite streams
+3. **Edge Cases**: Handle cases where skip exceeds stream size (returns empty stream)
+
+```java
+// Handle edge cases
+List<Integer> numbers = Arrays.asList(1, 2, 3);
+
+// Skip more than available
+List<Integer> empty = numbers.stream()
+    .skip(10)  // Skips all elements
+    .collect(Collectors.toList());
+// Result: [] (empty list)
+
+// Limit more than available
+List<Integer> all = numbers.stream()
+    .limit(10)  // Returns all 3 elements
+    .collect(Collectors.toList());
+// Result: [1, 2, 3]
+```
+
+### anyMatch(), allMatch(), and noneMatch() in Stream Operations
+
+These are terminal operations that take a predicate and return a boolean result based on the elements of the stream. They provide short-circuit evaluation for efficient processing.
+
+#### Method Signatures
+- **anyMatch(Predicate<T> predicate)**: Returns `true` if any element in the stream matches the predicate
+- **allMatch(Predicate<T> predicate)**: Returns `true` if all elements in the stream satisfy the predicate
+- **noneMatch(Predicate<T> predicate)**: Returns `true` if no elements in the stream match the predicate
+
+#### Basic Usage Examples
+
+##### anyMatch() - At Least One Match
+```java
+List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
+
+// Check if any number is even
+boolean hasEven = numbers.stream()
+    .anyMatch(n -> n % 2 == 0);
+// Result: true (2 and 4 are even)
+
+// Check if any student has GPA > 3.5
+boolean hasHighPerformer = StudentDatabase.getStudents().stream()
+    .anyMatch(student -> student.getGpa() > 3.5);
+```
+
+##### allMatch() - All Elements Match
+```java
+List<Integer> numbers = Arrays.asList(2, 4, 6, 8, 10);
+
+// Check if all numbers are even
+boolean allEven = numbers.stream()
+    .allMatch(n -> n % 2 == 0);
+// Result: true
+
+// Check if all students have GPA > 2.0
+boolean allPassing = StudentDatabase.getStudents().stream()
+    .allMatch(student -> student.getGpa() > 2.0);
+```
+
+##### noneMatch() - No Elements Match
+```java
+List<Integer> numbers = Arrays.asList(1, 3, 5, 7, 9);
+
+// Check if no numbers are even
+boolean noEven = numbers.stream()
+    .noneMatch(n -> n % 2 == 0);
+// Result: true
+
+// Check if no students have failing grades
+boolean noFailures = StudentDatabase.getStudents().stream()
+    .noneMatch(student -> student.getGpa() < 1.0);
+```
+
+#### Short-Circuit Evaluation
+These operations stop processing as soon as the result is determined:
+
+```java
+// anyMatch stops after finding first match
+boolean result = IntStream.range(1, 1000000)
+    .anyMatch(n -> n > 100);
+// Stops at 101, doesn't check remaining elements
+
+// allMatch stops at first non-match
+boolean allPositive = IntStream.range(1, 1000000)
+    .allMatch(n -> n > 0);
+// Would stop immediately if it finds a non-positive number
+
+// noneMatch stops at first match
+boolean noneNegative = IntStream.range(1, 1000000)
+    .noneMatch(n -> n < 0);
+// Stops if it finds any negative number
+```
+
+#### Practical Examples
+
+##### Data Validation
+```java
+List<Student> students = StudentDatabase.getStudents();
+
+// Validation checks
+boolean anyUnderAge = students.stream()
+    .anyMatch(s -> s.getAge() < 18);
+
+boolean allHaveEmail = students.stream()
+    .allMatch(s -> s.getEmail() != null && !s.getEmail().isEmpty());
+
+boolean noInvalidGpa = students.stream()
+    .noneMatch(s -> s.getGpa() < 0.0 || s.getGpa() > 4.0);
+
+if (anyUnderAge) {
+    System.out.println("Warning: Some students are under 18");
+}
+```
+
+##### Complex Predicates
+```java
+List<Student> students = StudentDatabase.getStudents();
+
+// Check if any student is eligible for scholarship
+Predicate<Student> scholarshipEligible = student -> 
+    student.getGpa() >= 3.5 && 
+    student.getActivities().size() >= 3;
+
+boolean hasScholarshipCandidate = students.stream()
+    .anyMatch(scholarshipEligible);
+
+// Check if all students meet minimum requirements
+Predicate<Student> meetsMinimum = student -> 
+    student.getGpa() >= 2.0 && 
+    student.getGradeLevel() >= 1;
+
+boolean allQualified = students.stream()
+    .allMatch(meetsMinimum);
+```
+
+#### Combining with Other Operations
+```java
+// Filter first, then check
+boolean anyHighPerformerMale = StudentDatabase.getStudents().stream()
+    .filter(s -> s.getGender().equals("male"))
+    .anyMatch(s -> s.getGpa() > 3.8);
+
+// Check activities
+boolean allStudentsActive = StudentDatabase.getStudents().stream()
+    .allMatch(s -> s.getActivities().size() > 0);
+
+// Verify no empty names
+boolean noEmptyNames = StudentDatabase.getStudents().stream()
+    .map(Student::getName)
+    .noneMatch(name -> name == null || name.trim().isEmpty());
+```
+
+#### Best Practices
+1. **Use for Validation**: These methods are ideal for checking conditions across collections
+2. **Short-Circuit Benefits**: They stop as soon as the result is known, making them efficient
+3. **Readable Code**: More expressive than traditional loops for boolean checks
+
+```java
+// Traditional approach (verbose)
+boolean hasEven = false;
+for (Integer num : numbers) {
+    if (num % 2 == 0) {
+        hasEven = true;
+        break;
+    }
+}
+
+// Stream approach (concise)
+boolean hasEven = numbers.stream().anyMatch(n -> n % 2 == 0);
+```
+
+### findFirst() and findAny() in Stream Operations
+
+These are terminal operations used to find elements in a stream. Both return an `Optional` containing the element, if found.
+
+#### Method Signatures and Purpose
+- **findFirst()**: `Optional<T> findFirst()` - Returns an Optional containing the first element in the stream
+- **findAny()**: `Optional<T> findAny()` - Returns an Optional containing any element from the stream (useful in parallel streams)
+
+#### Key Differences
+- **findFirst()**: Deterministic - always returns the first element in encounter order
+- **findAny()**: Non-deterministic in parallel streams - may return any element for better performance
+
+#### Basic Usage Examples
+
+##### findFirst() - Get First Element
+```java
+List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
+
+// Find first element
+Optional<Integer> first = numbers.stream()
+    .findFirst();
+// Result: Optional[1]
+
+// Find first even number
+Optional<Integer> firstEven = numbers.stream()
+    .filter(n -> n % 2 == 0)
+    .findFirst();
+// Result: Optional[2]
+
+// Unwrap the Optional
+Integer value = firstEven.orElse(-1);  // Returns 2
+```
+
+##### findAny() - Get Any Element
+```java
+List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
+
+// Find any element (sequential stream - usually first)
+Optional<Integer> any = numbers.stream()
+    .findAny();
+// Result: Optional[1] (in sequential stream)
+
+// Find any even number
+Optional<Integer> anyEven = numbers.stream()
+    .filter(n -> n % 2 == 0)
+    .findAny();
+// Result: Could be Optional[2] or Optional[4]
+```
+
+#### Parallel Stream Performance
+```java
+List<Integer> largeList = IntStream.range(1, 1000000)
+    .boxed()
+    .collect(Collectors.toList());
+
+// findAny() is faster in parallel streams
+Optional<Integer> anyMatch = largeList.parallelStream()
+    .filter(n -> n > 100000)
+    .findAny();  // Returns quickly, doesn't wait for first match
+
+// findFirst() maintains order even in parallel
+Optional<Integer> firstMatch = largeList.parallelStream()
+    .filter(n -> n > 100000)
+    .findFirst();  // Returns 100001 (first in order)
+```
+
+#### Practical Examples with Students
+
+##### Finding Students
+```java
+List<Student> students = StudentDatabase.getStudents();
+
+// Find first student with GPA > 3.5
+Optional<Student> topStudent = students.stream()
+    .filter(s -> s.getGpa() > 3.5)
+    .findFirst();
+
+topStudent.ifPresent(s -> 
+    System.out.println("Top student: " + s.getName()));
+
+// Find any male student
+Optional<Student> anyMale = students.stream()
+    .filter(s -> s.getGender().equals("male"))
+    .findAny();
+```
+
+##### Handling Optional Results
+```java
+// Method 1: Using ifPresent()
+students.stream()
+    .filter(s -> s.getGpa() > 3.8)
+    .findFirst()
+    .ifPresent(s -> System.out.println("Found: " + s.getName()));
+
+// Method 2: Using orElse()
+Student student = students.stream()
+    .filter(s -> s.getName().equals("John"))
+    .findFirst()
+    .orElse(new Student("Unknown"));  // Default value
+
+// Method 3: Using orElseGet()
+Student student = students.stream()
+    .filter(s -> s.getName().equals("John"))
+    .findFirst()
+    .orElseGet(() -> createDefaultStudent());  // Lazy evaluation
+
+// Method 4: Using orElseThrow()
+Student student = students.stream()
+    .filter(s -> s.getName().equals("John"))
+    .findFirst()
+    .orElseThrow(() -> new NoSuchElementException("Student not found"));
+```
+
+#### Short-Circuit Evaluation
+Both operations are short-circuit operations - they stop processing once an element is found:
+
+```java
+// Stops after finding first match
+Optional<Integer> result = IntStream.range(1, 1000000)
+    .filter(n -> n > 500)
+    .findFirst();  // Stops at 501
+
+// Useful for existence checks
+boolean exists = students.stream()
+    .filter(s -> s.getName().equals("John"))
+    .findFirst()
+    .isPresent();
+
+// Or more concisely with anyMatch()
+boolean exists = students.stream()
+    .anyMatch(s -> s.getName().equals("John"));
+```
+
+#### Complex Search Scenarios
+
+##### Searching with Multiple Criteria
+```java
+// Find first student matching complex criteria
+Optional<Student> eligible = students.stream()
+    .filter(s -> s.getGpa() > 3.5)
+    .filter(s -> s.getGradeLevel() >= 3)
+    .filter(s -> s.getActivities().size() > 2)
+    .findFirst();
+
+// Extract property from found student
+String studentName = students.stream()
+    .filter(s -> s.getGpa() == 4.0)
+    .findFirst()
+    .map(Student::getName)
+    .orElse("No perfect GPA student");
+```
+
+##### Chaining Operations
+```java
+// Find and transform
+String upperName = students.stream()
+    .filter(s -> s.getGpa() > 3.5)
+    .map(Student::getName)
+    .map(String::toUpperCase)
+    .findFirst()
+    .orElse("NOT FOUND");
+
+// Find nested data
+Optional<String> firstActivity = students.stream()
+    .filter(s -> !s.getActivities().isEmpty())
+    .map(Student::getActivities)
+    .findFirst()
+    .flatMap(activities -> activities.stream().findFirst());
+```
+
+#### Best Practices
+
+##### When to Use findFirst() vs findAny()
+```java
+// Use findFirst() when:
+// 1. Order matters
+List<String> sortedNames = students.stream()
+    .map(Student::getName)
+    .sorted()
+    .findFirst();  // Need the alphabetically first name
+
+// 2. Deterministic behavior is required
+Optional<Student> youngest = students.stream()
+    .sorted(Comparator.comparing(Student::getAge))
+    .findFirst();  // Must be the youngest
+
+// Use findAny() when:
+// 1. Working with parallel streams
+Optional<Student> anyEligible = students.parallelStream()
+    .filter(s -> s.getGpa() > 3.0)
+    .findAny();  // Faster in parallel
+
+// 2. Order doesn't matter
+Optional<String> anyActivity = students.stream()
+    .flatMap(s -> s.getActivities().stream())
+    .findAny();  // Any activity is fine
+```
+
+##### Empty Stream Handling
+```java
+List<Student> emptyList = new ArrayList<>();
+
+// Safe handling of empty streams
+Optional<Student> result = emptyList.stream()
+    .findFirst();
+// Result: Optional.empty
+
+// With default value
+Student student = emptyList.stream()
+    .findFirst()
+    .orElse(Student.getDefault());
+
+// Check before using
+emptyList.stream()
+    .findFirst()
+    .ifPresent(s -> processStudent(s));
+```
+
+#### Interview Tips
+1. **Remember**: Both return `Optional<T>`, never null
+2. **Performance**: `findAny()` is faster in parallel streams
+3. **Order**: `findFirst()` respects encounter order, `findAny()` doesn't guarantee it
+4. **Short-Circuit**: Both stop processing once element is found
+
+### Stream Operations: Stateful vs Stateless
+
+Stream operations can be categorized as stateful or stateless based on whether they need to maintain internal state to process elements.
+
+#### Understanding State in Streams
+- **Question**: Do Streams have internal state? **Yes**
+- **Question**: Do all Stream operations maintain internal state? **No**
+
+#### Stateless Operations
+Operations that process each element independently without needing to know about other elements.
+
+##### Characteristics
+- **No Memory**: Don't remember previously processed elements
+- **Independent Processing**: Each element is processed in isolation
+- **Parallel-Friendly**: Can be easily parallelized
+- **Low Memory Overhead**: Don't require additional storage
+
+##### Examples of Stateless Operations
+```java
+// filter() - stateless
+List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
+List<Integer> even = numbers.stream()
+    .filter(n -> n % 2 == 0)  // Each element checked independently
+    .collect(Collectors.toList());
+
+// map() - stateless
+List<String> names = students.stream()
+    .map(Student::getName)  // Each student mapped independently
+    .collect(Collectors.toList());
+
+// flatMap() - stateless
+List<String> activities = students.stream()
+    .flatMap(s -> s.getActivities().stream())  // Independent flattening
+    .collect(Collectors.toList());
+
+// peek() - stateless
+students.stream()
+    .peek(s -> System.out.println(s.getName()))  // Side effect per element
+    .collect(Collectors.toList());
+```
+
+#### Stateful Operations
+Operations that need to maintain state about previously seen elements or need to see all elements before producing results.
+
+##### Characteristics
+- **Memory Required**: Must store information about elements
+- **Buffering**: May need to process entire stream before producing output
+- **Performance Impact**: Can be expensive for large streams
+- **Ordering Dependencies**: May depend on element order
+
+##### Examples of Stateful Operations
+```java
+// distinct() - stateful (maintains set of seen elements)
+List<Integer> numbers = Arrays.asList(1, 2, 2, 3, 3, 4);
+List<Integer> unique = numbers.stream()
+    .distinct()  // Must remember all seen elements
+    .collect(Collectors.toList());
+// Internal state: HashSet of seen elements
+
+// sorted() - stateful (must see all elements to sort)
+List<Student> sorted = students.stream()
+    .sorted(Comparator.comparing(Student::getGpa))  // Needs all elements
+    .collect(Collectors.toList());
+// Internal state: Buffer containing all elements
+
+// limit() - stateful (counts elements processed)
+List<Integer> first5 = numbers.stream()
+    .limit(5)  // Must track count
+    .collect(Collectors.toList());
+// Internal state: Counter
+
+// skip() - stateful (counts elements to skip)
+List<Integer> afterFirst3 = numbers.stream()
+    .skip(3)  // Must track how many skipped
+    .collect(Collectors.toList());
+// Internal state: Counter
+```
+
+#### Comprehensive Comparison Table
+
+| Operation | Type | Reason |
+|-----------|------|--------|
+| filter() | Stateless | Processes each element independently |
+| map() | Stateless | Transforms each element independently |
+| flatMap() | Stateless | Flattens each element independently |
+| peek() | Stateless | Performs action on each element independently |
+| forEach() | Stateless | Processes each element independently |
+| distinct() | Stateful | Must remember all previously seen elements |
+| sorted() | Stateful | Must buffer all elements to sort |
+| limit() | Stateful | Must count elements processed |
+| skip() | Stateful | Must count elements to skip |
+| reduce() | Stateful | Accumulates result across elements |
+| collect() | Stateful | Accumulates elements into collection |
+
+#### Performance Implications
+
+##### Stateless Operations - Efficient Parallelization
+```java
+// Easily parallelizable - no coordination needed
+List<String> upperNames = students.parallelStream()
+    .filter(s -> s.getGpa() > 3.0)  // Stateless
+    .map(Student::getName)           // Stateless
+    .map(String::toUpperCase)        // Stateless
+    .collect(Collectors.toList());
+```
+
+##### Stateful Operations - Coordination Required
+```java
+// Requires coordination in parallel streams
+List<Student> topStudents = students.parallelStream()
+    .sorted(Comparator.comparing(Student::getGpa))  // Stateful - expensive
+    .limit(10)                                       // Stateful
+    .collect(Collectors.toList());
+// Parallel threads must coordinate to merge sorted results
+```
+
+#### Memory Considerations
+
+##### Stateless - Constant Memory
+```java
+// Memory usage independent of stream size
+long count = IntStream.range(1, 1000000)
+    .filter(n -> n % 2 == 0)  // Stateless - O(1) memory
+    .map(n -> n * 2)          // Stateless - O(1) memory
+    .count();
+```
+
+##### Stateful - Linear Memory
+```java
+// Memory grows with stream size
+List<Integer> sorted = IntStream.range(1, 1000000)
+    .boxed()
+    .sorted()  // Stateful - O(n) memory, must store all elements
+    .collect(Collectors.toList());
+
+List<Integer> unique = IntStream.range(1, 1000000)
+    .boxed()
+    .distinct()  // Stateful - O(k) memory, where k = unique elements
+    .collect(Collectors.toList());
+```
+
+#### Best Practices
+
+##### Optimize Pipeline Order
+```java
+// Good: Stateless operations first, reduce data before stateful ops
+List<Student> result = students.stream()
+    .filter(s -> s.getGpa() > 3.0)     // Stateless - reduce early
+    .filter(s -> s.getGradeLevel() > 2) // Stateless - reduce more
+    .sorted(Comparator.comparing(Student::getName))  // Stateful - fewer elements
+    .limit(10)                          // Stateful
+    .collect(Collectors.toList());
+
+// Bad: Stateful operations on full dataset
+List<Student> result = students.stream()
+    .sorted(Comparator.comparing(Student::getName))  // Stateful - all elements
+    .filter(s -> s.getGpa() > 3.0)     // After expensive sort
+    .limit(10)
+    .collect(Collectors.toList());
+```
+
+##### Use Short-Circuit Operations
+```java
+// Combine with short-circuit operations to limit stateful work
+Optional<Student> first = students.stream()
+    .filter(s -> s.getGpa() > 3.5)  // Stateless
+    .findFirst();  // Short-circuit - stops early
+
+// Instead of
+List<Student> all = students.stream()
+    .filter(s -> s.getGpa() > 3.5)
+    .collect(Collectors.toList());
+Student first = all.get(0);  // Processes entire stream
+```
+
+#### Interview Quick Reference
+**Stateless Operations**: filter, map, flatMap, peek
+**Stateful Operations**: distinct, sorted, limit, skip
+**Key Difference**: Stateful operations need to remember or see multiple elements
+**Performance**: Stateless operations are more efficient, especially in parallel streams
  ## stream api factory method
 - of() -> this factory method is used to create a stream of certain values passed to this method.
 - iterate(), generate() -> used to create infinite stream
@@ -1222,3 +1897,37 @@ Stream.generate(<supplier>);
 - the output of groupingBy() is to be Map<K,V>
 - 3 version
 - groupingBy(classifier),groupingBy(classifier,downstream),groupingBy(classifier,supplier, downstream).
+
+### parallel Stream
+- Splits the source of data into multiple parts
+- process them parallelly
+- combine the result.
+
+### Optional
+- it is used to handle the null.
+- Optional.ofNullable() - return actual Optional value if the value is not null and return Optional.empty() if the value is null.
+- Optional.of() - returns the optional value if the value is not null. if the value it null it return null pointer exception. it is used when we are sure value should not be null.
+- Optiona.empty() - return emptu optional value.
+-  orElse() - it return the optional id the value available or return the Other values.
+-  orElseGet - it takes supplier. if values available then return the value or else retun the supplier value.
+-  orElseThrow - it return the exception if the optional value is not abvailable.
+- isPresent() - it return true if the optionalvalue available.
+- ifPresent() - if the optional value present then it execute the consumer.
+
+### default and static methods in interface
+- prior java 8, interface can only have abstract method.
+  - define the contract.
+  - only allowed to declare the method signature. not allowed to provide the implementation.
+  - implemetation only allowed in the class which implements the interface.
+  - not easy for interface to evolve because if we add new method in the interface then all the class which implements the interface need to provide the implementation for that method.
+- java 8, interface can have default and static method.
+- default method - it is used to provide the default implementation for the method in the interface.
+  - default keyword is used to declare the default method in the interface.
+  - Default method can be overridden by the class which implements the interface.
+  - it is used to evolve the interface without breaking the existing implementation.
+- static method - it is used to provide the static method in the interface. 
+  - static keyword is used to declare the static method in the interface.
+  - static method can be called without creating the object of the class which implements the interface.
+  - it is used to provide utility method in the interface.
+  - static method cannot be overridden by the class which implements the interface.
+
