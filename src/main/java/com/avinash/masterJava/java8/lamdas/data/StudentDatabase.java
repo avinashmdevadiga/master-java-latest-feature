@@ -3,6 +3,9 @@ package com.avinash.masterJava.java8.lamdas.data;
 import java.util.List;
 
 public class StudentDatabase {
+    public static Student studentSupplier(){
+      return new Student("adam",2,3.6,"male",List.of("swimming","basketball","volleyball"),15);
+    }
 
     public static List<Student> getStudents(){
 
