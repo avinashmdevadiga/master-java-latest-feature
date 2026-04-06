@@ -1956,3 +1956,10 @@ Stream.generate(<supplier>);
   - It is used to provide utility methods in the interface.
   - Static method cannot be overridden by the class which implements the interface.
 
+### Date and time libraries
+- LacalDate, LocalTime and LacaleDateTime and part of java.time package
+- these new classes created with inspiration of jada-time library.
+- All new time libraries are immutable.
+- supporting classes are instant, Time Duration.
+- 
+
