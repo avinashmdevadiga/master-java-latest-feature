@@ -1956,10 +1956,28 @@ Stream.generate(<supplier>);
   - It is used to provide utility methods in the interface.
   - Static method cannot be overridden by the class which implements the interface.
 
-### Date and time libraries
-- LacalDate, LocalTime and LacaleDateTime and part of java.time package
-- these new classes created with inspiration of jada-time library.
-- All new time libraries are immutable.
-- supporting classes are instant, Time Duration.
-- 
-
+### Date and Time API
+- Java 8 introduced a new Date and Time API in the java.time package.
+- It provides a comprehensive set of classes to handle date and time in a more intuitive and flexible way.
+- Key classes include:
+  - LocalDate - represents a date (year, month, day) without time.  
+  - LocalTime - represents a time (hour, minute, second) without date.
+  - LocalDateTime - represents a date and time without timezone.
+- ZonedDateTime - represents a date and time with timezone.
+- Instant - represents a point in time (timestamp).it represent the time in machin readable format.
+- Duration - represents a time-based amount of time (e.g., 5 hours, 30 minutes).
+- Period - represents a date-based amount of time (e.g., 2 years, 3 months).
+- DateTimeFormatter - used to format and parse date and time objects.
+- The new API is immutable and thread-safe, providing better performance and easier handling of date and time operations compared to the old java.util.Date and java.util.Calendar classes.
+- Example usage:
+```java
+LocalDate date = LocalDate.of(2024, Month.JUNE, 15);  
+LocalTime time = LocalTime.of(14, 30);
+LocalDateTime dateTime = LocalDateTime.of(date, time);
+ZonedDateTime zonedDateTime = dateTime.atZone(ZoneId.of("America/New_York"));
+Duration duration = Duration.ofHours(5);
+Period period = Period.ofMonths(3); 
+DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+String formattedDateTime = dateTime.format(formatter);
+LocalDate parsedDate = LocalDate.parse("2024-06-15", DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+```
