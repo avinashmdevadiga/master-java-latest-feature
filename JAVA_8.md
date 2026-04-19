@@ -13,9 +13,9 @@ Lambda expressions are a fundamental feature introduced in Java 8, representing 
 #### What are Lambda Expressions?
 - A lambda expression is equivalent to an anonymous function (a function without a name)
 - Lambda expressions are also referred to as anonymous functions, which have all the method properties such as:
-  - Method parameters
-  - Method body
-  - Return type (optional)
+    - Method parameters
+    - Method body
+    - Return type (optional)
 - Lambdas are not tied to any specific class like regular methods
 - Lambda expressions can be assigned to variables and passed as parameters
 
@@ -25,11 +25,11 @@ Lambda expressions are a fundamental feature introduced in Java 8, representing 
 (parameter1, parameter2) -> { body }
 
 // Examples
-() -> System.out.println("Hello World")           // No parameters
+        () -> System.out.println("Hello World")           // No parameters
 x -> x * 2                                        // Single parameter
-(x, y) -> x + y                                   // Multiple parameters
-(x, y) -> { 
-    int sum = x + y; 
+        (x, y) -> x + y                                   // Multiple parameters
+(x, y) -> {
+int sum = x + y; 
     return sum; 
 }                                                 // Multiple statements
 ```
@@ -40,10 +40,10 @@ x -> x * 2                                        // Single parameter
 - **Definition**: An interface that contains exactly one abstract method is considered a functional interface
 - **Examples**: Runnable, Comparator, Callable interfaces
 - **Benefits**:
-  - Reduces boilerplate code
-  - Improves code readability
-  - Enables functional programming paradigm
-  - Facilitates parallel processing
+    - Reduces boilerplate code
+    - Improves code readability
+    - Enables functional programming paradigm
+    - Facilitates parallel processing
 
 ```java
 @FunctionalInterface
@@ -72,9 +72,9 @@ A functional interface is an interface that contains exactly one abstract method
 - **Single Abstract Method**: Contains exactly one abstract method (SAM)
 - **Historical Context**: Functional interfaces have existed since Java 1.0 (e.g., Runnable, Callable)
 - **@FunctionalInterface Annotation**: Introduced in JDK 1.8, this annotation is optional but recommended
-  - Provides compile-time checking
-  - Generates documentation
-  - Prevents accidental addition of abstract methods
+    - Provides compile-time checking
+    - Generates documentation
+    - Prevents accidental addition of abstract methods
 
 #### Built-in Functional Interfaces in Java 8
 
@@ -272,13 +272,13 @@ A typical stream pipeline consists of:
 
 ```java
 Map<String, List<String>> result = StudentDatabase.getStudents()
-    .stream()                           // Source
-    .filter(student -> student.getGpa() > 3.0)  // Intermediate operation
-    .filter(student -> student.getGender().equals("male"))  // Intermediate operation
-    .collect(Collectors.toMap(          // Terminal operation
-        Student::getName, 
-        Student::getActivities
-    ));
+        .stream()                           // Source
+        .filter(student -> student.getGpa() > 3.0)  // Intermediate operation
+        .filter(student -> student.getGender().equals("male"))  // Intermediate operation
+        .collect(Collectors.toMap(          // Terminal operation
+                Student::getName,
+                Student::getActivities
+        ));
 ```
 
 #### Key Characteristics
@@ -293,20 +293,20 @@ Map<String, List<String>> result = StudentDatabase.getStudents()
 List<Student> students = StudentDatabase.getStudents();
 List<String> maleStudentNames = new ArrayList<>();
 for (Student student : students) {
-    if (student.getGpa() > 3.0 && student.getGender().equals("male")) {
+        if (student.getGpa() > 3.0 && student.getGender().equals("male")) {
         maleStudentNames.add(student.getName());
-    }
-}
+        }
+        }
 ```
 
 **With Streams (Functional Style):**
 ```java
 List<String> maleStudentNames = StudentDatabase.getStudents()
-    .stream()
-    .filter(student -> student.getGpa() > 3.0)
-    .filter(student -> student.getGender().equals("male"))
-    .map(Student::getName)
-    .collect(Collectors.toList());
+        .stream()
+        .filter(student -> student.getGpa() > 3.0)
+        .filter(student -> student.getGender().equals("male"))
+        .map(Student::getName)
+        .collect(Collectors.toList());
 ```
 
 ### Collections vs Streams: Fundamental Differences
@@ -329,8 +329,8 @@ names.remove("Avinash");  // Modifies the collection
 ```java
 List<String> names = Arrays.asList("Avinash", "Anil", "Abhishek");
 List<String> filtered = names.stream()
-    .filter(name -> name.startsWith("A"))
-    .collect(Collectors.toList());
+        .filter(name -> name.startsWith("A"))
+        .collect(Collectors.toList());
 // Original 'names' list remains unchanged
 ```
 
@@ -360,7 +360,7 @@ stream.forEach(System.out::println);  // First traversal
 ```java
 List<Integer> numbers = new ArrayList<>();
 for (int i = 0; i < 1000000; i++) {
-    numbers.add(i);  // All elements stored in memory
+        numbers.add(i);  // All elements stored in memory
 }
 ```
 
@@ -369,7 +369,7 @@ for (int i = 0; i < 1000000; i++) {
 - **Memory Efficient**: Only processes elements when needed
 ```java
 Stream<Integer> infiniteStream = Stream.iterate(0, n -> n + 1)
-    .limit(1000000);  // No computation until terminal operation
+        .limit(1000000);  // No computation until terminal operation
 ```
 
 #### Iteration Mechanism
@@ -379,10 +379,10 @@ Stream<Integer> infiniteStream = Stream.iterate(0, n -> n + 1)
 ```java
 List<String> names = Arrays.asList("Avinash", "Anil", "Abhishek");
 for (String name : names) {  // External iteration
-    if (name.startsWith("A")) {
+        if (name.startsWith("A")) {
         System.out.println(name.toUpperCase());
-    }
-}
+        }
+        }
 ```
 
 **Streams (Internal Iteration):**
@@ -391,7 +391,7 @@ for (String name : names) {  // External iteration
 ```java
 names.stream()  // Internal iteration
     .filter(name -> name.startsWith("A"))
-    .map(String::toUpperCase)
+        .map(String::toUpperCase)
     .forEach(System.out::println);
 ```
 
@@ -434,11 +434,11 @@ Let's trace through a detailed example to understand how streams work:
 List<Student> students = StudentDatabase.getStudents();
 students.stream()
     .peek(s -> System.out.println("Before filter: " + s.getName()))
-    .filter(s -> s.getGpa() > 3.0)
-    .peek(s -> System.out.println("After 1st filter: " + s.getName()))
-    .filter(s -> s.getGender().equals("male"))
-    .peek(s -> System.out.println("After 2nd filter: " + s.getName()))
-    .collect(Collectors.toList());
+        .filter(s -> s.getGpa() > 3.0)
+        .peek(s -> System.out.println("After 1st filter: " + s.getName()))
+        .filter(s -> s.getGender().equals("male"))
+        .peek(s -> System.out.println("After 2nd filter: " + s.getName()))
+        .collect(Collectors.toList());
 ```
 
 **Processing Flow:**
@@ -476,15 +476,15 @@ After 1st filter: Emily (passes GPA > 3.0)
 // Efficient: Filter operations are performed first to reduce data
 students.stream()
     .filter(s -> s.getGpa() > 3.0)        // Reduces dataset first
-    .filter(s -> s.getGender().equals("male"))  // Further reduces dataset
-    .map(Student::getName)                 // Transform only remaining elements
+        .filter(s -> s.getGender().equals("male"))  // Further reduces dataset
+        .map(Student::getName)                 // Transform only remaining elements
     .collect(Collectors.toList());
 
 // Less efficient: Expensive operations performed on all elements
-students.stream()
+        students.stream()
     .map(s -> expensiveTransformation(s))  // Performed on all elements
-    .filter(s -> s.getGpa() > 3.0)        // Filter after expensive operation
-    .collect(Collectors.toList());
+        .filter(s -> s.getGpa() > 3.0)        // Filter after expensive operation
+        .collect(Collectors.toList());
 ```
 
 #### Stream Processing vs Traditional Processing
@@ -493,31 +493,31 @@ students.stream()
 ```java
 List<Student> filtered1 = new ArrayList<>();
 for (Student s : students) {
-    if (s.getGpa() > 3.0) {
+        if (s.getGpa() > 3.0) {
         filtered1.add(s);
     }
-}
+            }
 
 List<Student> filtered2 = new ArrayList<>();
 for (Student s : filtered1) {
-    if (s.getGender().equals("male")) {
+        if (s.getGender().equals("male")) {
         filtered2.add(s);
     }
-}
+            }
 
 List<String> names = new ArrayList<>();
 for (Student s : filtered2) {
-    names.add(s.getName());
-}
+        names.add(s.getName());
+        }
 ```
 
 **Stream Processing:**
 ```java
 List<String> names = students.stream()
-    .filter(s -> s.getGpa() > 3.0)
-    .filter(s -> s.getGender().equals("male"))
-    .map(Student::getName)
-    .collect(Collectors.toList());
+        .filter(s -> s.getGpa() > 3.0)
+        .filter(s -> s.getGender().equals("male"))
+        .map(Student::getName)
+        .collect(Collectors.toList());
 ```
 
 #### Benefits of Stream Processing Model
@@ -540,8 +540,8 @@ The `filter()` method is one of the most fundamental intermediate operations in 
 // Basic filtering
 List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
 List<Integer> evenNumbers = numbers.stream()
-    .filter(n -> n % 2 == 0)  // Predicate: n % 2 == 0
-    .collect(Collectors.toList());
+        .filter(n -> n % 2 == 0)  // Predicate: n % 2 == 0
+        .collect(Collectors.toList());
 // Result: [2, 4, 6, 8, 10]
 ```
 
@@ -553,21 +553,21 @@ List<Student> students = StudentDatabase.getStudents();
 
 // Single condition
 List<Student> highPerformers = students.stream()
-    .filter(student -> student.getGpa() > 3.5)
-    .collect(Collectors.toList());
+        .filter(student -> student.getGpa() > 3.5)
+        .collect(Collectors.toList());
 
 // Multiple conditions using method chaining
 List<Student> maleHighPerformers = students.stream()
-    .filter(student -> student.getGpa() > 3.5)
-    .filter(student -> student.getGender().equals("male"))
-    .collect(Collectors.toList());
+        .filter(student -> student.getGpa() > 3.5)
+        .filter(student -> student.getGender().equals("male"))
+        .collect(Collectors.toList());
 
 // Complex condition using logical operators
 List<Student> eligible = students.stream()
-    .filter(student -> student.getGpa() > 3.0 && 
-                      student.getGradeLevel() >= 3 &&
-                      student.getActivities().size() > 2)
-    .collect(Collectors.toList());
+        .filter(student -> student.getGpa() > 3.0 &&
+                student.getGradeLevel() >= 3 &&
+                student.getActivities().size() > 2)
+        .collect(Collectors.toList());
 ```
 
 ##### Using Predicate Variables
@@ -579,8 +579,8 @@ Predicate<Student> isActive = student -> student.getActivities().size() > 2;
 
 // Combining predicates
 List<Student> result = students.stream()
-    .filter(highGpa.and(isMale).or(isActive))
-    .collect(Collectors.toList());
+        .filter(highGpa.and(isMale).or(isActive))
+        .collect(Collectors.toList());
 ```
 
 #### Performance Considerations
@@ -592,14 +592,14 @@ List<Student> result = students.stream()
 // Efficient: Filter first, then transform
 students.stream()
     .filter(student -> student.getGpa() > 3.0)  // Reduce dataset early
-    .map(Student::getName)                      // Transform fewer elements
+        .map(Student::getName)                      // Transform fewer elements
     .collect(Collectors.toList());
 
 // Less efficient: Transform first, then filter
-students.stream()
+        students.stream()
     .map(Student::getName)                      // Transform all elements
     .filter(name -> name.startsWith("A"))       // Filter after transformation
-    .collect(Collectors.toList());
+        .collect(Collectors.toList());
 ```
 
 ### map() in Stream Operations
@@ -619,15 +619,15 @@ The `map()` method is a crucial intermediate operation that transforms each elem
 // String to Integer transformation
 List<String> numbers = Arrays.asList("1", "2", "3", "4", "5");
 List<Integer> integers = numbers.stream()
-    .map(Integer::parseInt)  // Method reference
-    .collect(Collectors.toList());
+        .map(Integer::parseInt)  // Method reference
+        .collect(Collectors.toList());
 // Result: [1, 2, 3, 4, 5]
 
 // String manipulation
 List<String> names = Arrays.asList("john", "jane", "bob");
 List<String> upperNames = names.stream()
-    .map(String::toUpperCase)
-    .collect(Collectors.toList());
+        .map(String::toUpperCase)
+        .collect(Collectors.toList());
 // Result: ["JOHN", "JANE", "BOB"]
 ```
 
@@ -637,17 +637,17 @@ List<Student> students = StudentDatabase.getStudents();
 
 // Extract single property
 List<String> studentNames = students.stream()
-    .map(Student::getName)
-    .collect(Collectors.toList());
+        .map(Student::getName)
+        .collect(Collectors.toList());
 
 // Extract multiple properties into new objects
 List<StudentSummary> summaries = students.stream()
-    .map(student -> new StudentSummary(
-        student.getName(),
-        student.getGpa(),
-        student.getGradeLevel()
-    ))
-    .collect(Collectors.toList());
+        .map(student -> new StudentSummary(
+                student.getName(),
+                student.getGpa(),
+                student.getGradeLevel()
+        ))
+        .collect(Collectors.toList());
 ```
 
 #### Advanced Mapping Techniques
@@ -658,26 +658,26 @@ List<Student> students = StudentDatabase.getStudents();
 
 // Multiple transformations in sequence
 List<String> processedNames = students.stream()
-    .filter(student -> student.getGpa() > 3.0)
-    .map(Student::getName)           // Extract name
-    .map(String::toUpperCase)        // Convert to uppercase
-    .map(name -> "Mr./Ms. " + name)  // Add prefix
-    .collect(Collectors.toList());
+        .filter(student -> student.getGpa() > 3.0)
+        .map(Student::getName)           // Extract name
+        .map(String::toUpperCase)        // Convert to uppercase
+        .map(name -> "Mr./Ms. " + name)  // Add prefix
+        .collect(Collectors.toList());
 ```
 
 ##### Complex Object Transformations
 ```java
 // Transform to DTO objects
 List<StudentDTO> dtos = students.stream()
-    .map(student -> {
-        StudentDTO dto = new StudentDTO();
-        dto.setFullName(student.getName().toUpperCase());
-        dto.setGrade(student.getGradeLevel());
-        dto.setPerformanceLevel(student.getGpa() > 3.5 ? "High" : "Average");
-        dto.setActivityCount(student.getActivities().size());
-        return dto;
-    })
-    .collect(Collectors.toList());
+                .map(student -> {
+                    StudentDTO dto = new StudentDTO();
+                    dto.setFullName(student.getName().toUpperCase());
+                    dto.setGrade(student.getGradeLevel());
+                    dto.setPerformanceLevel(student.getGpa() > 3.5 ? "High" : "Average");
+                    dto.setActivityCount(student.getActivities().size());
+                    return dto;
+                })
+                .collect(Collectors.toList());
 ```
 
 ##### Mathematical Transformations
@@ -686,14 +686,14 @@ List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
 
 // Mathematical operations
 List<Integer> squared = numbers.stream()
-    .map(n -> n * n)
-    .collect(Collectors.toList());
+        .map(n -> n * n)
+        .collect(Collectors.toList());
 // Result: [1, 4, 9, 16, 25]
 
 // Complex calculations
 List<Double> calculations = numbers.stream()
-    .map(n -> Math.pow(n, 2) + Math.sqrt(n))
-    .collect(Collectors.toList());
+        .map(n -> Math.pow(n, 2) + Math.sqrt(n))
+        .collect(Collectors.toList());
 ```
 
 #### Performance and Best Practices
@@ -707,26 +707,26 @@ Function<String, String> addPrefix = name -> "Student: " + name;
 
 // Use in pipeline
 List<String> formattedNames = students.stream()
-    .map(extractName)
-    .map(toUpperCase)
-    .map(addPrefix)
-    .collect(Collectors.toList());
+        .map(extractName)
+        .map(toUpperCase)
+        .map(addPrefix)
+        .collect(Collectors.toList());
 ```
 
 ##### Null Safety
 ```java
 // Handle potential null values
 List<String> safeNames = students.stream()
-    .map(student -> Optional.ofNullable(student.getName())
-                           .orElse("Unknown"))
-    .collect(Collectors.toList());
+                .map(student -> Optional.ofNullable(student.getName())
+                        .orElse("Unknown"))
+                .collect(Collectors.toList());
 
 // Using map with Optional
 List<Integer> nameLengths = students.stream()
-    .map(Student::getName)
-    .filter(Objects::nonNull)
-    .map(String::length)
-    .collect(Collectors.toList());
+        .map(Student::getName)
+        .filter(Objects::nonNull)
+        .map(String::length)
+        .collect(Collectors.toList());
 ```
 
 #### Common Use Cases
@@ -752,8 +752,8 @@ The `flatMap()` method is a powerful intermediate operation that not only transf
 ```java
 List<String> words = Arrays.asList("hello", "world");
 List<String[]> result = words.stream()
-    .map(word -> word.split(""))  // Each word becomes a String[]
-    .collect(Collectors.toList());
+        .map(word -> word.split(""))  // Each word becomes a String[]
+        .collect(Collectors.toList());
 // Result: [["h","e","l","l","o"], ["w","o","r","l","d"]] - List of arrays
 ```
 
@@ -761,8 +761,8 @@ List<String[]> result = words.stream()
 ```java
 List<String> words = Arrays.asList("hello", "world");
 List<String> result = words.stream()
-    .flatMap(word -> Arrays.stream(word.split("")))  // Flattens arrays into single stream
-    .collect(Collectors.toList());
+        .flatMap(word -> Arrays.stream(word.split("")))  // Flattens arrays into single stream
+        .collect(Collectors.toList());
 // Result: ["h","e","l","l","o","w","o","r","l","d"] - Flat list
 ```
 
@@ -774,36 +774,36 @@ List<Student> students = StudentDatabase.getStudents();
 
 // Extract all activities from all students
 List<String> allActivities = students.stream()
-    .flatMap(student -> student.getActivities().stream())
-    .distinct()  // Remove duplicates
-    .collect(Collectors.toList());
+        .flatMap(student -> student.getActivities().stream())
+        .distinct()  // Remove duplicates
+        .collect(Collectors.toList());
 
 // Without flatMap (more verbose)
 List<String> activitiesVerbose = new ArrayList<>();
 for (Student student : students) {
-    activitiesVerbose.addAll(student.getActivities());
-}
+        activitiesVerbose.addAll(student.getActivities());
+        }
 ```
 
 ##### Working with Nested Lists
 ```java
 List<List<Integer>> nestedNumbers = Arrays.asList(
-    Arrays.asList(1, 2, 3),
-    Arrays.asList(4, 5, 6),
-    Arrays.asList(7, 8, 9)
+        Arrays.asList(1, 2, 3),
+        Arrays.asList(4, 5, 6),
+        Arrays.asList(7, 8, 9)
 );
 
 // Flatten to single list
 List<Integer> flatNumbers = nestedNumbers.stream()
-    .flatMap(List::stream)
-    .collect(Collectors.toList());
+        .flatMap(List::stream)
+        .collect(Collectors.toList());
 // Result: [1, 2, 3, 4, 5, 6, 7, 8, 9]
 
 // Flatten and transform
 List<Integer> squaredNumbers = nestedNumbers.stream()
-    .flatMap(List::stream)
-    .map(n -> n * n)
-    .collect(Collectors.toList());
+        .flatMap(List::stream)
+        .map(n -> n * n)
+        .collect(Collectors.toList());
 // Result: [1, 4, 9, 16, 25, 36, 49, 64, 81]
 ```
 
@@ -813,20 +813,20 @@ List<Integer> squaredNumbers = nestedNumbers.stream()
 ```java
 // Read all lines from multiple files
 List<Path> files = Arrays.asList(
-    Paths.get("file1.txt"),
-    Paths.get("file2.txt"),
-    Paths.get("file3.txt")
-);
+                Paths.get("file1.txt"),
+                Paths.get("file2.txt"),
+                Paths.get("file3.txt")
+        );
 
 List<String> allLines = files.stream()
-    .flatMap(path -> {
-        try {
-            return Files.lines(path);
-        } catch (IOException e) {
-            return Stream.empty();  // Handle errors gracefully
-        }
-    })
-    .collect(Collectors.toList());
+        .flatMap(path -> {
+            try {
+                return Files.lines(path);
+            } catch (IOException e) {
+                return Stream.empty();  // Handle errors gracefully
+            }
+        })
+        .collect(Collectors.toList());
 ```
 
 ##### Optional Handling
@@ -835,16 +835,16 @@ List<Student> students = StudentDatabase.getStudents();
 
 // Extract email addresses (assuming getEmail() returns Optional<String>)
 List<String> emails = students.stream()
-    .flatMap(student -> student.getEmail()
-                              .map(Stream::of)
-                              .orElse(Stream.empty()))
-    .collect(Collectors.toList());
+        .flatMap(student -> student.getEmail()
+                .map(Stream::of)
+                .orElse(Stream.empty()))
+        .collect(Collectors.toList());
 
 // More concise with flatMap and Optional
 List<String> emailsConcise = students.stream()
-    .map(Student::getEmail)
-    .flatMap(Optional::stream)  // Java 9+ feature
-    .collect(Collectors.toList());
+        .map(Student::getEmail)
+        .flatMap(Optional::stream)  // Java 9+ feature
+        .collect(Collectors.toList());
 ```
 
 ##### Complex Data Structures
@@ -860,15 +860,15 @@ List<Department> departments = getDepartments();
 
 // Get all employees from all departments
 List<Employee> allEmployees = departments.stream()
-    .flatMap(dept -> dept.getEmployees().stream())
-    .collect(Collectors.toList());
+        .flatMap(dept -> dept.getEmployees().stream())
+        .collect(Collectors.toList());
 
 // Get all skills from all employees
 List<String> allSkills = departments.stream()
-    .flatMap(dept -> dept.getEmployees().stream())
-    .flatMap(emp -> emp.getSkills().stream())
-    .distinct()
-    .collect(Collectors.toList());
+        .flatMap(dept -> dept.getEmployees().stream())
+        .flatMap(emp -> emp.getSkills().stream())
+        .distinct()
+        .collect(Collectors.toList());
 ```
 
 #### Performance Considerations
@@ -878,17 +878,17 @@ List<String> allSkills = departments.stream()
 // Efficient: Process one element at a time
 students.stream()
     .flatMap(student -> student.getActivities().stream())
-    .filter(activity -> activity.contains("sports"))
-    .limit(10)  // Short-circuit evaluation
+        .filter(activity -> activity.contains("sports"))
+        .limit(10)  // Short-circuit evaluation
     .collect(Collectors.toList());
 
 // Less efficient: Create intermediate collections
 List<String> allActivities = students.stream()
-    .flatMap(student -> student.getActivities().stream())
-    .collect(Collectors.toList());  // Large intermediate collection
+        .flatMap(student -> student.getActivities().stream())
+        .collect(Collectors.toList());  // Large intermediate collection
 List<String> filtered = allActivities.stream()
-    .filter(activity -> activity.contains("sports"))
-    .collect(Collectors.toList());
+        .filter(activity -> activity.contains("sports"))
+        .collect(Collectors.toList());
 ```
 
 ##### Error Handling in flatMap()
@@ -904,8 +904,8 @@ public Stream<String> safeReadLines(Path path) {
 }
 
 List<String> allLines = files.stream()
-    .flatMap(this::safeReadLines)
-    .collect(Collectors.toList());
+        .flatMap(this::safeReadLines)
+        .collect(Collectors.toList());
 ```
 
 #### Common Patterns and Best Practices
@@ -914,17 +914,17 @@ List<String> allLines = files.stream()
 ```java
 students.stream()
     .flatMap(student -> Optional.ofNullable(student.getActivities())
-                               .orElse(Collections.emptyList())
-                               .stream())
-    .collect(Collectors.toList());
+        .orElse(Collections.emptyList())
+        .stream())
+        .collect(Collectors.toList());
 ```
 
 2. **Combining with Other Operations**: Chain with filter, map, etc.
 ```java
 students.stream()
     .flatMap(student -> student.getActivities().stream())
-    .filter(activity -> activity.toLowerCase().contains("music"))
-    .map(String::toUpperCase)
+        .filter(activity -> activity.toLowerCase().contains("music"))
+        .map(String::toUpperCase)
     .distinct()
     .sorted()
     .collect(Collectors.toList());
@@ -934,9 +934,9 @@ students.stream()
 ```java
 // Good practice: Return empty stream instead of null
 public Stream<String> getActivitiesStream(Student student) {
-    return student.getActivities() != null ? 
-           student.getActivities().stream() : 
-           Stream.empty();
+    return student.getActivities() != null ?
+            student.getActivities().stream() :
+            Stream.empty();
 }
 ```
 
@@ -956,14 +956,14 @@ The `distinct()` method is an intermediate operation that returns a stream conta
 ```java
 List<Integer> numbers = Arrays.asList(1, 2, 2, 3, 3, 3, 4, 5, 5);
 List<Integer> uniqueNumbers = numbers.stream()
-    .distinct()
-    .collect(Collectors.toList());
+        .distinct()
+        .collect(Collectors.toList());
 // Result: [1, 2, 3, 4, 5]
 
 List<String> words = Arrays.asList("apple", "banana", "apple", "cherry", "banana");
 List<String> uniqueWords = words.stream()
-    .distinct()
-    .collect(Collectors.toList());
+        .distinct()
+        .collect(Collectors.toList());
 // Result: ["apple", "banana", "cherry"]
 ```
 
@@ -973,15 +973,15 @@ List<Student> students = StudentDatabase.getStudents();
 
 // Remove duplicate students (based on equals() implementation)
 List<Student> uniqueStudents = students.stream()
-    .distinct()
-    .collect(Collectors.toList());
+        .distinct()
+        .collect(Collectors.toList());
 
 // Get unique activities from all students
 List<String> uniqueActivities = students.stream()
-    .flatMap(student -> student.getActivities().stream())
-    .distinct()
-    .sorted()
-    .collect(Collectors.toList());
+        .flatMap(student -> student.getActivities().stream())
+        .distinct()
+        .sorted()
+        .collect(Collectors.toList());
 ```
 
 #### Advanced Distinct Operations
@@ -992,18 +992,18 @@ Since `distinct()` relies on `equals()`, for custom distinctness criteria, you c
 ```java
 // Method 1: Using map to extract key, then distinct
 List<String> uniqueNamesByFirstLetter = students.stream()
-    .map(Student::getName)
-    .map(name -> name.substring(0, 1).toUpperCase())
-    .distinct()
-    .collect(Collectors.toList());
+                .map(Student::getName)
+                .map(name -> name.substring(0, 1).toUpperCase())
+                .distinct()
+                .collect(Collectors.toList());
 
 // Method 2: Distinct by specific property using Collectors
 Map<String, Student> uniqueByGrade = students.stream()
-    .collect(Collectors.toMap(
-        student -> String.valueOf(student.getGradeLevel()),
-        student -> student,
-        (existing, replacement) -> existing  // Keep first occurrence
-    ));
+        .collect(Collectors.toMap(
+                student -> String.valueOf(student.getGradeLevel()),
+                student -> student,
+                (existing, replacement) -> existing  // Keep first occurrence
+        ));
 
 // Method 3: Using custom collector for distinct by property
 public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor) {
@@ -1012,8 +1012,8 @@ public static <T> Predicate<T> distinctByKey(Function<? super T, ?> keyExtractor
 }
 
 List<Student> uniqueByName = students.stream()
-    .filter(distinctByKey(Student::getName))
-    .collect(Collectors.toList());
+        .filter(distinctByKey(Student::getName))
+        .collect(Collectors.toList());
 ```
 
 #### Performance Characteristics
@@ -1026,8 +1026,8 @@ List<Student> uniqueByName = students.stream()
 // For large datasets, consider memory implications
 Stream<String> largeStream = Files.lines(Paths.get("large-file.txt"));
 List<String> uniqueLines = largeStream
-    .distinct()  // May consume significant memory
-    .collect(Collectors.toList());
+        .distinct()  // May consume significant memory
+        .collect(Collectors.toList());
 ```
 
 ##### Order Preservation
@@ -1035,8 +1035,8 @@ List<String> uniqueLines = largeStream
 // distinct() preserves encounter order
 List<String> orderedInput = Arrays.asList("c", "a", "b", "a", "c", "d");
 List<String> result = orderedInput.stream()
-    .distinct()
-    .collect(Collectors.toList());
+        .distinct()
+        .collect(Collectors.toList());
 // Result: ["c", "a", "b", "d"] - First occurrence order preserved
 ```
 
@@ -1045,17 +1045,17 @@ List<String> result = orderedInput.stream()
 ##### Data Cleaning
 ```java
 List<String> emails = Arrays.asList(
-    "john@example.com",
-    "JOHN@EXAMPLE.COM",
-    "jane@example.com",
-    "john@example.com"
+        "john@example.com",
+        "JOHN@EXAMPLE.COM",
+        "jane@example.com",
+        "john@example.com"
 );
 
 // Case-insensitive distinct
 List<String> uniqueEmails = emails.stream()
-    .map(String::toLowerCase)
-    .distinct()
-    .collect(Collectors.toList());
+        .map(String::toLowerCase)
+        .distinct()
+        .collect(Collectors.toList());
 // Result: ["john@example.com", "jane@example.com"]
 ```
 
@@ -1065,17 +1065,17 @@ List<Student> students = StudentDatabase.getStudents();
 
 // Count unique grade levels
 long uniqueGradeLevels = students.stream()
-    .mapToInt(Student::getGradeLevel)
-    .distinct()
-    .count();
+        .mapToInt(Student::getGradeLevel)
+        .distinct()
+        .count();
 
 // Get unique GPAs rounded to one decimal
 List<Double> uniqueGPAs = students.stream()
-    .map(Student::getGpa)
-    .map(gpa -> Math.round(gpa * 10) / 10.0)
-    .distinct()
-    .sorted()
-    .collect(Collectors.toList());
+        .map(Student::getGpa)
+        .map(gpa -> Math.round(gpa * 10) / 10.0)
+        .distinct()
+        .sorted()
+        .collect(Collectors.toList());
 ```
 
 #### Best Practices
@@ -1084,11 +1084,11 @@ List<Double> uniqueGPAs = students.stream()
 ```java
 // Efficient pipeline: filter before distinct to reduce processing
 List<String> result = students.stream()
-    .filter(student -> student.getGpa() > 3.0)  // Reduce dataset first
-    .map(Student::getName)
-    .distinct()
-    .sorted()
-    .collect(Collectors.toList());
+                .filter(student -> student.getGpa() > 3.0)  // Reduce dataset first
+                .map(Student::getName)
+                .distinct()
+                .sorted()
+                .collect(Collectors.toList());
 ```
 
 ##### Null Handling
@@ -1097,15 +1097,15 @@ List<String> names = Arrays.asList("John", null, "Jane", "John", null, "Bob");
 
 // Handle nulls explicitly
 List<String> uniqueNonNullNames = names.stream()
-    .filter(Objects::nonNull)
-    .distinct()
-    .collect(Collectors.toList());
+        .filter(Objects::nonNull)
+        .distinct()
+        .collect(Collectors.toList());
 // Result: ["John", "Jane", "Bob"]
 
 // Or include nulls
 List<String> uniqueWithNulls = names.stream()
-    .distinct()
-    .collect(Collectors.toList());
+        .distinct()
+        .collect(Collectors.toList());
 // Result: ["John", null, "Jane", "Bob"]
 ```
 
@@ -1121,20 +1121,83 @@ List<String> uniqueWithNulls = names.stream()
   `sorted(Comparator.comparing(Student::getName))` sorts the stream of `Student` objects by their names.
 - Sorting is an intermediate operation that returns a new stream with elements ordered based on the specified criteria.
 
+```java
+List<String> names = Arrays.asList("Charlie", "Alice", "Bob");
+
+// Natural order
+List<String> sorted = names.stream()
+    .sorted()
+    .collect(Collectors.toList());
+// Result: [Alice, Bob, Charlie]
+
+// Custom comparator - sort by length
+List<String> byLength = names.stream()
+    .sorted(Comparator.comparingInt(String::length))
+    .collect(Collectors.toList());
+// Result: [Bob, Alice, Charlie]
+
+// Reversed order
+List<String> reversed = names.stream()
+    .sorted(Comparator.reverseOrder())
+    .collect(Collectors.toList());
+// Result: [Charlie, Bob, Alice]
+
+// Sort students by GPA descending
+List<Student> topStudents = students.stream()
+    .sorted(Comparator.comparing(Student::getGpa).reversed())
+    .collect(Collectors.toList());
+```
+
 ### count()
 - Returns a `long` representing the total number of elements present in the stream.
 - It is a terminal operation that triggers the processing of the stream pipeline and produces the count as the result.
+
+```java
+List<String> names = Arrays.asList("Alice", "Bob", "Charlie", "Anna");
+
+// Count all elements
+long total = names.stream().count(); // 4
+
+// Count filtered elements
+long countStartingWithA = names.stream()
+    .filter(n -> n.startsWith("A"))
+    .count(); // 2
+
+// Count students with GPA > 3.5
+long highPerformers = students.stream()
+    .filter(s -> s.getGpa() > 3.5)
+    .count();
+```
 
 ### collect() in stream
 - A terminal operation used to transform the elements of the stream into a different form such as a collection (e.g., List, Set), a Map, or a summary result.
 - It takes a `Collector` which defines how to accumulate the elements, combine partial results, and finish the collection process.
 - This method is essential for retrieving the processed data from the stream pipeline into a usable container.
 
+```java
+List<String> names = Arrays.asList("Alice", "Bob", "Charlie");
+
+// Collect to List
+List<String> list = names.stream().collect(Collectors.toList());
+
+// Collect to Set (removes duplicates)
+Set<String> set = names.stream().collect(Collectors.toSet());
+
+// Collect to a specific collection type
+LinkedList<String> linkedList = names.stream()
+    .collect(Collectors.toCollection(LinkedList::new));
+
+// Collect to Map
+Map<String, Integer> nameLengthMap = names.stream()
+    .collect(Collectors.toMap(name -> name, String::length));
+// Result: {Alice=5, Bob=3, Charlie=7}
+```
+
 ### reduce() in stream
 - A terminal operation used to combine the elements of the stream into a single result by repeatedly applying a binary operator.
 - It can take either one or two parameters:
-  - An optional identity (initial) value that serves as the starting point for the reduction.
-  - A binary operator function that specifies how two elements are combined.
+    - An optional identity (initial) value that serves as the starting point for the reduction.
+    - A binary operator function that specifies how two elements are combined.
 - Example:
   ```java
   List<Integer> integerList = List.of(2, 4, 7, 3);
@@ -1844,16 +1907,16 @@ Student first = all.get(0);  // Processes entire stream
 **Stateful Operations**: distinct, sorted, limit, skip
 **Key Difference**: Stateful operations need to remember or see multiple elements
 **Performance**: Stateless operations are more efficient, especially in parallel streams
- ## stream api factory method
-- of() -> this factory method is used to create a stream of certain values passed to this method.
-- iterate(), generate() -> used to create infinite stream
+### Stream API Factory Methods
+- `of()` -> this factory method is used to create a stream of certain values passed to this method.
+- `iterate()`, `generate()` -> used to create infinite stream
 ```java
 Stream<Integer> integerStream = Stream.of(1,2,3);
 Stream.iterate(1,(x)->x*2);
 Stream.generate(<supplier>);
 ```
 
-### Numeric Stream 
+### Numeric Stream
 - represents the primitive values in the stream.
 - IntStream, LongStream, DoubleStream
 
@@ -1881,8 +1944,8 @@ Stream.generate(<supplier>);
 
 ### Terminal Operations
 - Terminal operations collect the data for you.
-  - Terminal operation starts the whole stream pipeline.
-  - Terminal Operations are - forEach(), min(), max(), collect(), reduce(), count()
+    - Terminal operation starts the whole stream pipeline.
+    - Terminal Operations are - forEach(), min(), max(), collect(), reduce(), count()
 
 ### joining()
 - joining() is a Collector (used with collect()) that joins the elements of the stream into a single String.
@@ -1894,7 +1957,7 @@ Stream.generate(<supplier>);
 - Terminal Operation starts the whole stream pipeline.
 - ex: forEach(), min(), max(), reduce(), count() etc.
 - collect() acts as an accumulator and takes input of type Collector.
-- Produces the result as per the input passed to the collect() method.  
+- Produces the result as per the input passed to the collect() method.
 - joining() method Collector performs the string concatenation on the elements in the stream.
 - joining() has three overloaded versions.
 - counting() - Collector returns the total number of elements as a result.
@@ -1917,8 +1980,8 @@ Stream.generate(<supplier>);
 - Processes them in parallel using the ForkJoin framework.
 - Combines the result.
 - Two ways to create a parallel stream:
-  - parallelStream() - called on a collection directly.
-  - parallel() - called on an existing sequential stream.
+    - parallelStream() - called on a collection directly.
+    - parallel() - called on an existing sequential stream.
 - Use sequential() to convert a parallel stream back to a sequential stream.
 - Not always faster than sequential streams; depends on the data size, operations, and hardware.
 - Avoid using parallel streams with stateful operations or shared mutable state.
@@ -1940,29 +2003,73 @@ Stream.generate(<supplier>);
 
 ### Default and Static Methods in Interface
 - Prior to Java 8, interfaces could only have abstract methods.
-  - Define the contract.
-  - Only allowed to declare the method signature. Not allowed to provide the implementation.
-  - Implementation only allowed in the class which implements the interface.
-  - Not easy for interfaces to evolve because if we add a new method in the interface then all the classes which implement the interface need to provide the implementation for that method.
+    - Define the contract.
+    - Only allowed to declare the method signature. Not allowed to provide the implementation.
+    - Implementation only allowed in the class which implements the interface.
+    - Not easy for interfaces to evolve because if we add a new method in the interface then all the classes which implement the interface need to provide the implementation for that method.
 - Java 8 onwards, interfaces can have default and static methods.
 - default method - it is used to provide the default implementation for a method in the interface.
-  - `default` keyword is used to declare the default method in the interface.
-  - Default method can be overridden by the class which implements the interface.
-  - It is used to evolve the interface without breaking the existing implementation.
-  - If a class implements two interfaces with the same default method, the class must override the method to resolve the conflict (diamond problem).
-- static method - it is used to provide a static method in the interface. 
-  - `static` keyword is used to declare the static method in the interface.
-  - Static method can be called using the interface name directly (e.g., InterfaceName.methodName()), without creating an object.
-  - It is used to provide utility methods in the interface.
-  - Static method cannot be overridden by the class which implements the interface.
+    - `default` keyword is used to declare the default method in the interface.
+    - Default method can be overridden by the class which implements the interface.
+    - It is used to evolve the interface without breaking the existing implementation.
+    - If a class implements two interfaces with the same default method, the class must override the method to resolve the conflict (diamond problem).
+- static method - it is used to provide a static method in the interface.
+    - `static` keyword is used to declare the static method in the interface.
+    - Static method can be called using the interface name directly (e.g., InterfaceName.methodName()), without creating an object.
+    - It is used to provide utility methods in the interface.
+    - Static method cannot be overridden by the class which implements the interface.
+
+```java
+interface Vehicle {
+    // Abstract method - must be implemented
+    String getBrand();
+
+    // Default method - provides default implementation
+    default String getDescription() {
+        return "Vehicle brand: " + getBrand();
+    }
+
+    // Static method - utility method on the interface
+    static int maxSpeed() {
+        return 200;
+    }
+}
+
+class Car implements Vehicle {
+    @Override
+    public String getBrand() { return "Toyota"; }
+
+    // Optionally override default method
+    @Override
+    public String getDescription() {
+        return "Car brand: " + getBrand();
+    }
+}
+
+// Usage
+Car car = new Car();
+System.out.println(car.getDescription());   // Car brand: Toyota
+System.out.println(Vehicle.maxSpeed());     // 200 — called on interface, not instance
+
+// Diamond Problem
+interface A { default void hello() { System.out.println("Hello from A"); } }
+interface B { default void hello() { System.out.println("Hello from B"); } }
+
+class C implements A, B {
+    @Override
+    public void hello() {
+        A.super.hello(); // Must explicitly resolve conflict
+    }
+}
+```
 
 ### Date and Time API
 - Java 8 introduced a new Date and Time API in the java.time package.
 - It provides a comprehensive set of classes to handle date and time in a more intuitive and flexible way.
 - Key classes include:
-  - LocalDate - represents a date (year, month, day) without time.  
-  - LocalTime - represents a time (hour, minute, second) without date.
-  - LocalDateTime - represents a date and time without timezone.
+    - LocalDate - represents a date (year, month, day) without time.
+    - LocalTime - represents a time (hour, minute, second) without date.
+    - LocalDateTime - represents a date and time without timezone.
 - ZonedDateTime - represents a date and time with timezone.
 - Instant - represents a point in time (timestamp).it represent the time in machin readable format.
 - Duration - represents a time-based amount of time (e.g., 5 hours, 30 minutes).
@@ -1980,4 +2087,210 @@ Period period = Period.ofMonths(3);
 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 String formattedDateTime = dateTime.format(formatter);
 LocalDate parsedDate = LocalDate.parse("2024-06-15", DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+```
+
+### CompletableFuture
+- Introduced in Java 8 in the `java.util.concurrent` package.
+- Provides **asynchronous, non-blocking** computation — an improvement over the older `Future` interface.
+- `Future` could only block on `get()`, had no callbacks, and couldn't be chained. `CompletableFuture` solves all of that.
+- Implements both `Future<T>` and `CompletionStage<T>`.
+
+#### Creating CompletableFuture
+```java
+// runAsync - no return value
+CompletableFuture<Void> cf1 = CompletableFuture.runAsync(() ->
+    System.out.println("Running in: " + Thread.currentThread().getName())
+);
+
+// supplyAsync - returns a value
+CompletableFuture<String> cf2 = CompletableFuture.supplyAsync(() -> "Hello from async!");
+
+// Block and get result
+String result = cf2.get(); // blocks until done — avoid in production
+```
+
+#### Chaining (Callback-style)
+```java
+CompletableFuture<String> pipeline = CompletableFuture
+    .supplyAsync(() -> "hello")           // async task
+    .thenApply(s -> s.toUpperCase())      // transform result (like map)
+    .thenApply(s -> "Result: " + s);     // transform again
+
+System.out.println(pipeline.get()); // "Result: HELLO"
+
+// thenAccept - consume result (no return)
+CompletableFuture.supplyAsync(() -> "hello")
+    .thenAccept(s -> System.out.println("Got: " + s));
+```
+
+#### Combining Two Futures
+```java
+CompletableFuture<String> greeting = CompletableFuture.supplyAsync(() -> "Hello");
+CompletableFuture<String> name     = CompletableFuture.supplyAsync(() -> "Alice");
+
+// thenCombine - wait for both, combine results
+String message = greeting.thenCombine(name, (g, n) -> g + ", " + n + "!")
+                         .get(); // "Hello, Alice!"
+```
+
+#### Running Multiple Futures
+```java
+CompletableFuture<String> f1 = CompletableFuture.supplyAsync(() -> "One");
+CompletableFuture<String> f2 = CompletableFuture.supplyAsync(() -> "Two");
+CompletableFuture<String> f3 = CompletableFuture.supplyAsync(() -> "Three");
+
+// allOf - wait for ALL to complete
+CompletableFuture.allOf(f1, f2, f3).get();
+
+// anyOf - return when FIRST completes
+Object first = CompletableFuture.anyOf(f1, f2, f3).get();
+```
+
+#### Error Handling
+```java
+CompletableFuture<String> safe = CompletableFuture
+    .supplyAsync(() -> {
+        if (true) throw new RuntimeException("Oops!");
+        return "OK";
+    })
+    .exceptionally(ex -> "Recovered: " + ex.getMessage()) // like catch
+    .handle((result, ex) -> ex != null ? "Error handled" : result); // always runs — like finally
+```
+
+#### Key Methods Summary
+| Method | Description |
+|---|---|
+| `supplyAsync()` | Async task with return value |
+| `runAsync()` | Async task without return value |
+| `thenApply()` | Transform result (like `map`) |
+| `thenAccept()` | Consume result (no return) |
+| `thenCombine()` | Combine two independent futures |
+| `thenCompose()` | Chain dependent futures (like `flatMap`) |
+| `allOf()` | Wait for all futures to complete |
+| `anyOf()` | Return when first completes |
+| `exceptionally()` | Handle exceptions (like catch) |
+| `handle()` | Handle result or exception (like finally) |
+
+- By default uses `ForkJoinPool.commonPool()`. For I/O-bound tasks supply a custom `ExecutorService`:
+```java
+ExecutorService pool = Executors.newFixedThreadPool(10);
+CompletableFuture.supplyAsync(() -> fetchFromDB(), pool);
+```
+
+---
+
+### Collections API Improvements
+Java 8 added several useful methods to existing Collection interfaces using **default methods**.
+
+#### Iterable — forEach()
+```java
+List<String> names = Arrays.asList("Alice", "Bob", "Charlie");
+names.forEach(System.out::println);             // method reference
+names.forEach(n -> System.out.println(n));      // lambda
+```
+
+#### Collection — removeIf()
+- Removes all elements that match the given predicate.
+```java
+List<Integer> numbers = new ArrayList<>(Arrays.asList(1, 2, 3, 4, 5, 6));
+numbers.removeIf(n -> n % 2 == 0); // removes all even numbers
+System.out.println(numbers); // [1, 3, 5]
+```
+
+#### List — replaceAll() and sort()
+```java
+List<String> names = new ArrayList<>(Arrays.asList("alice", "bob", "charlie"));
+
+// replaceAll - transform each element in-place using a UnaryOperator
+names.replaceAll(String::toUpperCase);
+System.out.println(names); // [ALICE, BOB, CHARLIE]
+
+// sort with comparator (available directly on List)
+names.sort(Comparator.comparingInt(String::length));
+System.out.println(names); // [BOB, ALICE, CHARLIE]
+```
+
+#### Map — New Methods
+```java
+Map<String, Integer> scores = new HashMap<>();
+scores.put("Alice", 90);
+scores.put("Bob", 85);
+
+// getOrDefault - return default if key not present
+int score = scores.getOrDefault("Emma", 0); // 0
+
+// putIfAbsent - insert only if key not already present
+scores.putIfAbsent("Alice", 100); // Alice stays 90
+scores.putIfAbsent("Emma", 88);   // Emma gets 88
+
+// forEach - iterate key-value pairs
+scores.forEach((name, s) -> System.out.println(name + ": " + s));
+
+// computeIfAbsent - compute value only if key is missing (great for grouping)
+Map<String, List<String>> grouped = new HashMap<>();
+grouped.computeIfAbsent("A", k -> new ArrayList<>()).add("Alice");
+grouped.computeIfAbsent("A", k -> new ArrayList<>()).add("Amy");
+// {"A": ["Alice", "Amy"]}
+
+// computeIfPresent - compute only if key already exists
+scores.computeIfPresent("Alice", (k, v) -> v + 10); // Alice: 100
+
+// merge - if key absent put value; if present apply remapping function
+scores.merge("Alice", 5, Integer::sum); // Alice: 105
+scores.merge("Emma", 70, Integer::sum); // Emma: 70 (key was absent)
+```
+
+---
+
+### StringJoiner
+- Introduced in Java 8 in `java.util` package.
+- Used to join strings with a delimiter, and optionally a prefix and suffix.
+- Internally used by `Collectors.joining()` in streams.
+
+```java
+// Basic usage
+StringJoiner sj = new StringJoiner(", ");
+sj.add("Java");
+sj.add("8");
+sj.add("Features");
+System.out.println(sj); // Java, 8, Features
+
+// With prefix and suffix
+StringJoiner sj2 = new StringJoiner(", ", "[", "]");
+sj2.add("Alice");
+sj2.add("Bob");
+System.out.println(sj2); // [Alice, Bob]
+
+// setEmptyValue - returned when nothing is added
+StringJoiner empty = new StringJoiner(", ", "[", "]");
+empty.setEmptyValue("NONE");
+System.out.println(empty); // NONE
+
+// String.join() - static shortcut
+String joined = String.join(", ", "Alice", "Bob", "Charlie"); // Alice, Bob, Charlie
+String joined2 = String.join(" | ", List.of("A", "B", "C")); // A | B | C
+```
+
+---
+
+### Base64 Encoding/Decoding
+- `java.util.Base64` was introduced in Java 8 — a clean, built-in Base64 utility replacing third-party libs.
+- Three variants: **Basic**, **URL-safe**, and **MIME**.
+
+```java
+String original = "Hello, Java 8!";
+
+// Basic encode / decode
+String encoded = Base64.getEncoder().encodeToString(original.getBytes());
+System.out.println(encoded); // SGVsbG8sIEphdmEgOCE=
+
+byte[] decoded = Base64.getDecoder().decode(encoded);
+System.out.println(new String(decoded)); // Hello, Java 8!
+
+// URL-safe (replaces + with - and / with _ — safe for URLs/filenames)
+String urlEncoded = Base64.getUrlEncoder().encodeToString(original.getBytes());
+String urlDecoded = new String(Base64.getUrlDecoder().decode(urlEncoded));
+
+// MIME encoding (inserts line breaks every 76 chars — used for email attachments)
+String mimeEncoded = Base64.getMimeEncoder().encodeToString(original.getBytes());
 ```
