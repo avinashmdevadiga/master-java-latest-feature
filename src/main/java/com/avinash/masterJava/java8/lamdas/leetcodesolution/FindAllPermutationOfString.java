@@ -13,11 +13,11 @@ Output: ["abc","acb","bac","bca","cab","cba"]
 * */
 public class FindAllPermutationOfString {
 
-    private static List<String> getAllPermutationString(String str){
+   /* private static List<String> getAllPermutationString(String str){
         List<String> resultList = new ArrayList<>();
         if(!str.isEmpty()) resultList.add(str);
 
-    }
+    }*/
     public static void main(String[] args) {
 
     }
