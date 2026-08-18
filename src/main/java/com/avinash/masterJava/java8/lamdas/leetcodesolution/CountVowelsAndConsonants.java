@@ -1,4 +1,4 @@
-package com.avinash.masterJava.java8.lamdas.leetcode;
+package com.avinash.masterJava.java8.lamdas.leetcodesolution;
 
 /*
 * Problem: Count the number of vowels and consonants in a string. Example:

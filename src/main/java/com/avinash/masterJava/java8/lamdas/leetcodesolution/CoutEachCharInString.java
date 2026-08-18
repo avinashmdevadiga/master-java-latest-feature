@@ -1,4 +1,4 @@
-package com.avinash.masterJava.java8.lamdas.leetcode;
+package com.avinash.masterJava.java8.lamdas.leetcodesolution;
 
 import java.util.HashMap;
 import java.util.Map;

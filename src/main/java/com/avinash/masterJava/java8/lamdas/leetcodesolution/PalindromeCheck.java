@@ -1,4 +1,4 @@
-package com.avinash.masterJava.java8.lamdas.leetcode;
+package com.avinash.masterJava.java8.lamdas.leetcodesolution;
 /*
 * Problem: Determine if a string reads the same forwards and backwards. Example:
 

@@ -1,7 +1,4 @@
-package com.avinash.masterJava.java8.lamdas.leetcode;
-
-import java.lang.reflect.Array;
-import java.util.Arrays;
+package com.avinash.masterJava.java8.lamdas.leetcodesolution;
 
 public class ReverseString {
 
